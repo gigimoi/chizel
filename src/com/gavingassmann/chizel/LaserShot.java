@@ -25,7 +25,12 @@ public class LaserShot implements IDrawable {
         for(int i = 0; i < _r.nextFloat() * 10 + 14; i++) {
             int brightness = (int)(_r.nextFloat() * 100f) + 100;
             color(brightness, brightness, 255, (int)(_r.nextFloat() * 155f + 100f));
-            drawLightning(_r.nextFloat() / 4f - 0.125f, 0, _r.nextFloat() / 2f - 0.25f, distance - 0.15f, 2.25f);
+            drawLightning(
+                    _r.nextFloat() / 4f - 0.125f,
+                    _r.nextFloat() / 2f,
+                    _r.nextFloat() / 2f - 0.25f,
+                    distance - 0.15f + _r.nextFloat() / 4f - 0.125f,
+                    1.5f + _r.nextFloat() / 4f);
         }
     }
     void drawLightning(float x1, float y1, float x2, float y2, float displace)
