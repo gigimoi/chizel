@@ -138,6 +138,7 @@ public class Program {
         DrawHelper.scale(0.2);
         float oldAngle = blocks.angle;
         blocks.angle = 0;
+        DrawHelper.translate(0.4, 0.4);
         blocks.draw();
         blocks.angle = oldAngle;
         glPopMatrix();
@@ -145,7 +146,9 @@ public class Program {
         new Laser(LaserX, 0).draw();
         glPopMatrix();
         glPushMatrix();
-        new LaserShot().draw();
+        if(shootingLaser) {
+            new LaserShot(LaserX / (float)WINDOW_WIDTH * 12f, 1, 5f).draw();
+        }
         glPopMatrix();
         glfwSwapBuffers(window);
     }
