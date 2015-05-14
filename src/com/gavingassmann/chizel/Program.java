@@ -20,6 +20,7 @@ public class Program {
     private GLFWErrorCallback errorCallback;
     private GLFWKeyCallback keyCallback;
     private GLFWCursorPosCallback cursorPosCallback;
+    private GLFWMouseButtonCallback mouseButtonCallback;
 
     private static Random _r = new Random();
     public static final int WINDOW_WIDTH = 420*2;
@@ -70,6 +71,17 @@ public class Program {
             public void invoke(long window, int key, int scancode, int action, int mods) {
                 if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
                     glfwSetWindowShouldClose(window, GL_TRUE);
+                if(key == GLFW_KEY_SPACE && action == GLFW_PRESS && !blocks.isRotating) {
+                    blocks.isRotating = true;
+                }
+            }
+        });
+        glfwSetMouseButtonCallback(window, mouseButtonCallback = new GLFWMouseButtonCallback() {
+            @Override
+            public void invoke(long window, int button, int action, int mods) {
+                if(button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
+                    shootLaser();
+                }
             }
         });
         glfwSetCursorPosCallback(window, cursorPosCallback = new GLFWCursorPosCallback() {
@@ -99,31 +111,57 @@ public class Program {
     public BlockGroup blocks = new BlockGroup();
     private void loop() {
         while ( glfwWindowShouldClose(window) == GL_FALSE ) {
-            clear();
-            glPushMatrix();
-            DrawHelper.color(60, 60, 60);
-            DrawHelper.scale(100, 2.1);
-            DrawHelper.renderSquare();
-            glPopMatrix();
-            glPushMatrix();
-            DrawHelper.color(60, 60, 60);
-            DrawHelper.translate(0, 9);
-            DrawHelper.scale(100, 2.1);
-            DrawHelper.renderSquare();
-            glPopMatrix();
-            glPushMatrix();
-            DrawHelper.translate(7, 2.25);
-            blocks.draw();
-            glPopMatrix();
-            glPushMatrix();
-            DrawHelper.scale(0.2);
-            blocks.draw();
-            glPopMatrix();
-            glfwSwapBuffers(window);
+            update();
+            draw();
             glfwPollEvents();
         }
     }
-
+    int LaserX = 0;
+    public void update() {
+        if(!shootingLaser) {
+            LaserX = Math.min(800, Math.max(MouseX, 120));
+        }
+        blocks.update();
+    }
+    boolean shootingLaser = false;
+    void shootLaser() {
+        shootingLaser = true;
+    }
+    public void draw() {
+        clear();
+        drawBorders();
+        glPushMatrix();
+        DrawHelper.translate(7, 2.25);
+        blocks.draw();
+        glPopMatrix();
+        glPushMatrix();
+        DrawHelper.scale(0.2);
+        float oldAngle = blocks.angle;
+        blocks.angle = 0;
+        blocks.draw();
+        blocks.angle = oldAngle;
+        glPopMatrix();
+        glPushMatrix();
+        new Laser(LaserX, 0).draw();
+        glPopMatrix();
+        glPushMatrix();
+        new LaserShot().draw();
+        glPopMatrix();
+        glfwSwapBuffers(window);
+    }
+    public void drawBorders() {
+        glPushMatrix();
+        DrawHelper.color(60, 60, 60);
+        DrawHelper.scale(100, 2.1);
+        DrawHelper.renderSquare();
+        glPopMatrix();
+        glPushMatrix();
+        DrawHelper.color(60, 60, 60);
+        DrawHelper.translate(0, 9);
+        DrawHelper.scale(100, 2.1);
+        DrawHelper.renderSquare();
+        glPopMatrix();
+    }
     public static void main(String[] args) {
         new Program().run();
     }

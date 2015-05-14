@@ -6,12 +6,12 @@ import static com.gavingassmann.chizel.DrawHelper.*;
 /**
  * Created by Gassmann844 on 5/12/2015.
  */
-public class BlockGroup implements IDrawable {
+public class BlockGroup implements IDrawable, IUpdatable{
     public Block[][] blocks = new Block[5][5];
     public float angle = 0f;
+    public boolean isRotating = false;
     @Override
     public void draw() {
-        angle += 1;
         scale(0.9);
         translate(2.5, 2.5);
         glRotated(angle, 0, 0, 1);
@@ -24,6 +24,16 @@ public class BlockGroup implements IDrawable {
                 }
                 blocks[i][j].draw();
                 glPopMatrix();
+            }
+        }
+    }
+
+    @Override
+    public void update() {
+        if(isRotating) {
+            angle += 90f / 45f;
+            if(angle % 90 == 0) {
+                isRotating = false;
             }
         }
     }

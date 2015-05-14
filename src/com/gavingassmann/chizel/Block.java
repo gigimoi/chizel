@@ -11,13 +11,12 @@ import static org.lwjgl.opengl.GL11.glScaled;
  * Created by Gassmann844 on 5/12/2015.
  */
 public class Block implements IDrawable {
-    public boolean broken = true;
+    public boolean broken = false;
     Random _r;
     long seed;
     public Block() {
         _r = new Random();
         seed = _r.nextLong();
-        broken = _r.nextBoolean();
     }
     @Override
     public void draw() {
