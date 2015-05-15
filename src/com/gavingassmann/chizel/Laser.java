@@ -3,7 +3,7 @@ package com.gavingassmann.chizel;
 
 import static com.gavingassmann.chizel.DrawHelper.*;
 /**
- * Created by Gassmann844 on 5/14/2015.
+ * Created by Gavin Gassmann
  */
 public class Laser implements IDrawable {
     public int X;

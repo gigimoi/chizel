@@ -7,7 +7,7 @@ import static com.gavingassmann.chizel.DrawHelper.translate;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
- * Created by Gassmann844 on 5/12/2015.
+ * Created by Gavin Gassmann
  */
 public class BlockGroup implements IDrawable, IUpdatable{
     public Block[][] blocks = new Block[5][5];
@@ -64,13 +64,13 @@ public class BlockGroup implements IDrawable, IUpdatable{
         }
         if (direction == 1) {
             int depth = 0;
-            Pair<Block, Integer> foundBlock = new Pair<Block, Integer>(rotatedBlocks[block][depth], depth);
+            Pair<Block, Integer> foundBlock = new Pair<>(rotatedBlocks[block][depth], depth);
             while (depth < 5 && foundBlock.getKey().broken) {
-                foundBlock = new Pair<Block, Integer>(rotatedBlocks[block][depth], depth);
+                foundBlock = new Pair<>(rotatedBlocks[block][depth], depth);
                 depth++;
             }
             if (foundBlock.getKey().broken) {
-                depth += 2;
+                foundBlock = new Pair<>(rotatedBlocks[block][depth], depth + 2);
             }
             return foundBlock;
         }

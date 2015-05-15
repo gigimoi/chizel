@@ -15,7 +15,7 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
- * Created by Gassmann844 on 2/19/2015.
+ * Created by Gavin Gassmann
  */
 public class Program {
 
@@ -24,7 +24,6 @@ public class Program {
     public static final String WINDOW_TITLE = "Chizel";
     public static int MouseX;
     public static int MouseY;
-    public static float ticker = 0;
     private static Random _r = new Random();
     public float[] bars = new float[16];
     public int redSquareX;
@@ -38,7 +37,6 @@ public class Program {
     private GLFWCursorPosCallback cursorPosCallback;
     private GLFWMouseButtonCallback mouseButtonCallback;
     private long window;
-    private int score = 0;
 
     public static void main(String[] args) {
         new Program().run();
@@ -53,6 +51,7 @@ public class Program {
             glfwDestroyWindow(window);
             keyCallback.release();
             cursorPosCallback.release();
+            mouseButtonCallback.release();
         } finally {
             glfwTerminate();
             errorCallback.release();
@@ -168,7 +167,7 @@ public class Program {
                 if (laserTicker == 1) {
                     hitBlock.getKey().broken = true;
                 }
-                new LaserShot(LaserX / (float) WINDOW_WIDTH * 12f, 1, hitBlock.getValue().intValue() + 1).draw();
+                new LaserShot(LaserX / (float) WINDOW_WIDTH * 12f, 1, hitBlock.getValue() + 1).draw();
             }
         }
         glPopMatrix();

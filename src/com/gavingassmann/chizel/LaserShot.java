@@ -5,7 +5,7 @@ import java.util.Random;
 import static com.gavingassmann.chizel.DrawHelper.*;
 
 /**
- * Created by Gassmann844 on 5/14/2015.
+ * Created by Gavin Gassmann
  */
 public class LaserShot implements IDrawable {
     public float x;
