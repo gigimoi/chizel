@@ -1,40 +1,48 @@
 package com.gavingassmann.chizel;
 
+import javafx.util.Pair;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLContext;
 
 import java.nio.ByteBuffer;
 import java.util.Random;
 
-import static org.lwjgl.glfw.Callbacks.*;
+import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 /**
  * Created by Gassmann844 on 2/19/2015.
  */
 public class Program {
 
+    public static final int WINDOW_WIDTH = 420*2;
+    public static final int WINDOW_HEIGHT = 315*2;
+    public static final String WINDOW_TITLE = "Chizel";
+    public static int MouseX;
+    public static int MouseY;
+    public static float ticker = 0;
+    private static Random _r = new Random();
+    public float[] bars = new float[16];
+    public int redSquareX;
+    public int redSquareY;
+    public BlockGroup blocks = new BlockGroup();
+    int LaserX = 0;
+    float laserTicker = 0;
+    boolean shootingLaser = false;
     private GLFWErrorCallback errorCallback;
     private GLFWKeyCallback keyCallback;
     private GLFWCursorPosCallback cursorPosCallback;
     private GLFWMouseButtonCallback mouseButtonCallback;
-
-    private static Random _r = new Random();
-    public static final int WINDOW_WIDTH = 420*2;
-    public static final int WINDOW_HEIGHT = 315*2;
-    public static final String WINDOW_TITLE = "Chizel";
-    public float[] bars = new float[16];
-
-    public static int MouseX;
-    public static int MouseY;
-    public int redSquareX;
-    public int redSquareY;
-    public static float ticker = 0;
-
     private long window;
+    private int score = 0;
+
+    public static void main(String[] args) {
+        new Program().run();
+    }
 
     public void run() {
         System.out.println(Sys.getVersion());
@@ -81,6 +89,7 @@ public class Program {
             public void invoke(long window, int button, int action, int mods) {
                 if(button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
                     shootLaser();
+                    laserTicker = 10f;
                 }
             }
         });
@@ -107,8 +116,7 @@ public class Program {
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glOrtho(0, 12, 0, 9, 0, 1);
     }
-    private int score = 0;
-    public BlockGroup blocks = new BlockGroup();
+
     private void loop() {
         while ( glfwWindowShouldClose(window) == GL_FALSE ) {
             update();
@@ -116,17 +124,24 @@ public class Program {
             glfwPollEvents();
         }
     }
-    int LaserX = 0;
+
     public void update() {
+        if (laserTicker > 0) {
+            laserTicker -= 1f;
+        } else {
+            laserTicker = 0;
+            shootingLaser = false;
+        }
         if(!shootingLaser) {
             LaserX = Math.min(800, Math.max(MouseX, 120));
         }
         blocks.update();
     }
-    boolean shootingLaser = false;
+
     void shootLaser() {
         shootingLaser = true;
     }
+
     public void draw() {
         clear();
         drawBorders();
@@ -147,11 +162,19 @@ public class Program {
         glPopMatrix();
         glPushMatrix();
         if(shootingLaser) {
-            new LaserShot(LaserX / (float)WINDOW_WIDTH * 12f, 1, 5f).draw();
+            int block = Math.round((LaserX - 488f - 32) / 64f);
+            Pair<Block, Integer> hitBlock = blocks.getBlock(block, 1);
+            if (hitBlock != null) {
+                if (laserTicker == 1) {
+                    hitBlock.getKey().broken = true;
+                }
+                new LaserShot(LaserX / (float) WINDOW_WIDTH * 12f, 1, hitBlock.getValue().intValue() + 1).draw();
+            }
         }
         glPopMatrix();
         glfwSwapBuffers(window);
     }
+
     public void drawBorders() {
         glPushMatrix();
         DrawHelper.color(60, 60, 60);
@@ -165,9 +188,7 @@ public class Program {
         DrawHelper.renderSquare();
         glPopMatrix();
     }
-    public static void main(String[] args) {
-        new Program().run();
-    }
+
     private void clear() {
         glPushMatrix();
         DrawHelper.color(0, 0, 0);

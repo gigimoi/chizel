@@ -1,7 +1,5 @@
 package com.gavingassmann.chizel;
 
-import org.lwjgl.opengl.GL11;
-
 import java.util.Random;
 
 import static com.gavingassmann.chizel.DrawHelper.*;
@@ -10,10 +8,10 @@ import static com.gavingassmann.chizel.DrawHelper.*;
  * Created by Gassmann844 on 5/14/2015.
  */
 public class LaserShot implements IDrawable {
-    Random _r = new Random();
     public float x;
     public float y;
     public float distance;
+    Random _r = new Random();
     public LaserShot(float x, float y, float distance) {
         this.x = x;
         this.y = y;
@@ -30,7 +28,7 @@ public class LaserShot implements IDrawable {
                     _r.nextFloat() / 2f,
                     _r.nextFloat() / 2f - 0.25f,
                     distance - 0.15f + _r.nextFloat() / 4f - 0.125f,
-                    1.5f + _r.nextFloat() / 4f
+                    distance / 5f + 0.4f + _r.nextFloat() / 6f
             );
         }
     }
