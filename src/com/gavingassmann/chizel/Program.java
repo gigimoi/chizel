@@ -36,6 +36,8 @@ public class Program {
 
     private long window;
 
+    MainMenu menu = new MainMenu();
+
     public void run() {
         System.out.println(Sys.getVersion());
 
@@ -118,6 +120,10 @@ public class Program {
     }
     int LaserX = 0;
     public void update() {
+        if(menu != null) {
+            menu.update();
+            return;
+        }
         if(!shootingLaser) {
             LaserX = Math.min(800, Math.max(MouseX, 120));
         }
@@ -129,6 +135,13 @@ public class Program {
     }
     public void draw() {
         clear();
+        if(menu != null) {
+            glPushMatrix();
+            menu.draw();
+            glPopMatrix();
+            glfwSwapBuffers(window);
+            return;
+        }
         drawBorders();
         glPushMatrix();
         DrawHelper.translate(7, 2.25);
@@ -154,15 +167,7 @@ public class Program {
     }
     public void drawBorders() {
         glPushMatrix();
-        DrawHelper.color(60, 60, 60);
-        DrawHelper.scale(100, 2.1);
-        DrawHelper.renderSquare();
-        glPopMatrix();
-        glPushMatrix();
-        DrawHelper.color(60, 60, 60);
-        DrawHelper.translate(0, 9);
-        DrawHelper.scale(100, 2.1);
-        DrawHelper.renderSquare();
+        new PanelsTopAndBottom().draw();
         glPopMatrix();
     }
     public static void main(String[] args) {

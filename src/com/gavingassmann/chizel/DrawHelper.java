@@ -60,4 +60,9 @@ public class DrawHelper {
         glVertex2f(-0.5f, 0.5f);
         glEnd();
     }
+    public static void text(String text) {
+        for(int i = 0; i < text.length(); i++) {
+
+        }
+    }
 }
