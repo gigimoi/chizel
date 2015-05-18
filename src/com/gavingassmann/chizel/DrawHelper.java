@@ -5,7 +5,7 @@ import org.lwjgl.opengl.GL11;
 import static org.lwjgl.opengl.GL11.*;
 
 /**
- * Created by Gassmann844 on 5/12/2015.
+ * Created by Gavin Gassmann
  */
 public class DrawHelper {
     public static void translate(double x, double y) {
@@ -30,6 +30,8 @@ public class DrawHelper {
         glVertex2f(x2, y2);
         glEnd();
     }
+
+    /*
     public static void renderStar() {
         glBegin(GL_TRIANGLES);
         glVertex2f(-0.2f, 0);
@@ -52,6 +54,7 @@ public class DrawHelper {
         glVertex2f(0f, 0.2f);
         glEnd();
     }
+    */
     public static void renderSquare() {
         glBegin(GL_QUADS);
         glVertex2f(-0.5f, -0.5f);

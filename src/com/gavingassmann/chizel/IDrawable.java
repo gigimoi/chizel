@@ -1,7 +1,7 @@
 package com.gavingassmann.chizel;
 
 /**
- * Created by Gassmann844 on 5/12/2015.
+ * Created by Gavin Gassmann
  */
 public interface IDrawable {
     void draw();

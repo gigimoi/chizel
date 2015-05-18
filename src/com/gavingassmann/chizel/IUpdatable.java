@@ -1,7 +1,7 @@
 package com.gavingassmann.chizel;
 
 /**
- * Created by Gassmann844 on 5/14/2015.
+ * Created by Gavin Gassmann
  */
 public interface IUpdatable {
     void update();

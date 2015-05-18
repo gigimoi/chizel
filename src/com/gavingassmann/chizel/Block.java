@@ -5,10 +5,9 @@ import java.util.Random;
 import static com.gavingassmann.chizel.DrawHelper.*;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScaled;
 
 /**
- * Created by Gassmann844 on 5/12/2015.
+ * Created by Gavin Gassmann
  */
 public class Block implements IDrawable {
     public boolean broken = false;
