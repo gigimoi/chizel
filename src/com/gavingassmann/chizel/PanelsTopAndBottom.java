@@ -23,7 +23,7 @@ public class PanelsTopAndBottom implements IDrawable {
         renderSquare();
         glPopMatrix();
         glPushMatrix();
-        color(100, 100, 100);
+        color(90, 90, 90);
         glPushMatrix();
         for(int i = 0; i < 2; i++) {
             glPushMatrix();
