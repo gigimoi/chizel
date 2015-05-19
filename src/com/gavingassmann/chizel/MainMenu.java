@@ -18,8 +18,14 @@ public class MainMenu implements IDrawable, IUpdatable {
         renderSquare();
         glPopMatrix();
         glPushMatrix();
-        translate(0.1f, 0.1f);
-        text("abcdefghijklmnopqrstuvwxyz");
+        translate(3f, 7f);
+        scale(3);
+        text("Chizel");
+        glPopMatrix();
+        glPushMatrix();
+        translate(6f, 4f);
+        scale(1.1);
+        text("[Enter]");
         glPopMatrix();
     }
     @Override

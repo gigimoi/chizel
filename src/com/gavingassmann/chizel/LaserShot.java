@@ -20,15 +20,17 @@ public class LaserShot implements IDrawable {
     @Override
     public void draw() {
         translate(x, y);
-        for(int i = 0; i < _r.nextFloat() * 10 + 14; i++) {
+        float displace = 0.5f;
+        for(int i = 0; i < _r.nextFloat() * 20 + 20; i++) {
+            displace *= 0.95f;
             int brightness = (int)(_r.nextFloat() * 100f) + 120;
             color(brightness, brightness, 255, (int)(_r.nextFloat() * 155f + 100f));
             drawLightning(
                     _r.nextFloat() / 4f - 0.125f,
                     _r.nextFloat() / 2f,
-                    _r.nextFloat() / 2f - 0.25f,
+                    _r.nextFloat() / 4f - 0.125f,
                     distance - 0.15f + _r.nextFloat() / 4f - 0.125f,
-                    distance / 5f + 0.4f + _r.nextFloat() / 6f
+                    distance / 5f + displace + _r.nextFloat() / 6f
             );
         }
     }
@@ -38,12 +40,12 @@ public class LaserShot implements IDrawable {
             line(x1, x2, y1, y2, (float)Math.random() + 2);
         }
         else {
-            float mid_x = (x2+x1)/2;
-            float mid_y = (y2+y1)/2;
-            mid_x += (Math.random()-.5)*displace;
-            mid_y += (Math.random()-.5)*displace;
-            drawLightning(x1,y1,mid_x,mid_y,displace/2);
-            drawLightning(x2,y2,mid_x,mid_y,displace/2);
+            float mid_x = (x2 + x1) / 2;
+            float mid_y = (y2 + y1) / 2;
+            mid_x += (Math.random() - .5) * displace;
+            mid_y += (Math.random() - .5) * displace;
+            drawLightning(x1, y1, mid_x, mid_y, displace / 2);
+            drawLightning(x2, y2, mid_x, mid_y, displace / 2);
         }
     }
 }

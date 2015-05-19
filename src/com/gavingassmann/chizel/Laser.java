@@ -14,7 +14,7 @@ public class Laser implements IDrawable {
     }
     @Override
     public void draw() {
-        translate((float)X / (float)Program.WINDOW_WIDTH * 12f, (float)Y / (float)Program.WINDOW_HEIGHT * 9f);
+        translate((float)X / (float)Program.WINDOW_WIDTH * 12f, Y);
         color(150, 150, 150);
         renderSquare();
         scale(0.3, 2);
