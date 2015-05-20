@@ -294,6 +294,9 @@ public class Program {
                 glPopMatrix();
             }
         }
+        glPushMatrix();
+        new ScoreUI(10).draw();
+        glPopMatrix();
         if(foundBad) {
             glPushMatrix();
             new BigResult(true).draw();
