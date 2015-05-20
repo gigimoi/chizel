@@ -70,7 +70,7 @@ public class BlockGroup implements IDrawable, IUpdatable{
                 depth++;
             }
             if (foundBlock.getKey().broken) {
-                foundBlock = new Pair<>(rotatedBlocks[block][depth], depth + 2);
+                foundBlock = new Pair<>(rotatedBlocks[block][depth - 1], depth + 2);
             }
             return foundBlock;
         }

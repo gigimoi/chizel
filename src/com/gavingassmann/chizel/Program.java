@@ -9,6 +9,8 @@ import org.lwjgl.opengl.GLContext;
 import java.nio.ByteBuffer;
 import java.util.Random;
 
+import static com.gavingassmann.chizel.DrawHelper.scale;
+import static com.gavingassmann.chizel.DrawHelper.translate;
 import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -22,15 +24,18 @@ public class Program {
     public static final int WINDOW_WIDTH = 420*2;
     public static final int WINDOW_HEIGHT = 315*2;
     public static final String WINDOW_TITLE = "Chizel";
+
     public static int MouseX;
     public static int MouseY;
+
     private static Random _r = new Random();
-    public float[] bars = new float[16];
-    public int redSquareX;
-    public int redSquareY;
+
     public BlockGroup blocks = new BlockGroup();
+    public BlockGroup targetBlocks;
+
     int LaserX = 0;
     float laserTicker = 0;
+
     boolean shootingLaser = false;
     private GLFWErrorCallback errorCallback;
     private GLFWKeyCallback keyCallback;
@@ -39,6 +44,8 @@ public class Program {
     private long window;
 
     public static void main(String[] args) {
+        //</skynet>
+        //Safety first
         new Program().run();
     }
 
@@ -59,11 +66,9 @@ public class Program {
     }
 
     private void init() {
-        for(int i = 0; i < bars.length; i++) {
-            bars[i] = _r.nextFloat() * - 20f;
-        }
-        redSquareX = _r.nextInt(8);
-        redSquareY = _r.nextInt(6);
+        Patterns.init();
+        targetBlocks = Patterns.getGroup(0);
+
         glfwSetErrorCallback(errorCallback = errorCallbackPrint(System.err));
         if ( glfwInit() != GL11.GL_TRUE )
             throw new IllegalStateException("Unable to initialize GLFW");
@@ -123,7 +128,7 @@ public class Program {
             glfwPollEvents();
         }
     }
-
+    float offset = 0;
     public void update() {
         if (laserTicker > 0) {
             laserTicker -= 1f;
@@ -133,6 +138,7 @@ public class Program {
         }
         if(!shootingLaser) {
             LaserX = Math.min(800, Math.max(MouseX, 120));
+            offset -= 0.006f;
         }
         blocks.update();
     }
@@ -145,23 +151,31 @@ public class Program {
         clear();
         drawBorders();
         glPushMatrix();
-        DrawHelper.translate(7, 2.25);
+        translate(7, 2.25);
+        translate(offset, 0);
         blocks.draw();
         glPopMatrix();
         glPushMatrix();
-        DrawHelper.scale(0.2);
-        float oldAngle = blocks.angle;
-        blocks.angle = 0;
-        DrawHelper.translate(0.4, 0.4);
-        blocks.draw();
-        blocks.angle = oldAngle;
+        scale(0.2);
+        translate(0.3, 0.3);
+        targetBlocks.draw();
+        glPopMatrix();
+        glPushMatrix();
+        translate(0, 2.25);
+        scale(0.9);
+        translate(0, 0.5);
+        for(int i = 0; i < 5; i++) {
+            glPushMatrix();
+            new ConveyorReader(i, "check").draw();
+            glPopMatrix();
+        }
         glPopMatrix();
         glPushMatrix();
         new Laser(LaserX, 0).draw();
         glPopMatrix();
         glPushMatrix();
         if(shootingLaser) {
-            int block = Math.round((LaserX - 488f - 32) / 64f);
+            int block = Math.round((LaserX - 488f - 32 - (offset * 420 * 2 / 12)) / 64f); //This line works through pixie magic, do not tough
             Pair<Block, Integer> hitBlock = blocks.getBlock(block, 1);
             if (hitBlock != null) {
                 if (laserTicker == 1) {
@@ -177,13 +191,13 @@ public class Program {
     public void drawBorders() {
         glPushMatrix();
         DrawHelper.color(60, 60, 60);
-        DrawHelper.scale(100, 2.1);
+        scale(100, 2.1);
         DrawHelper.renderSquare();
         glPopMatrix();
         glPushMatrix();
         DrawHelper.color(60, 60, 60);
-        DrawHelper.translate(0, 9);
-        DrawHelper.scale(100, 2.1);
+        translate(0, 9);
+        scale(100, 2.1);
         DrawHelper.renderSquare();
         glPopMatrix();
     }
@@ -191,7 +205,7 @@ public class Program {
     private void clear() {
         glPushMatrix();
         DrawHelper.color(0, 0, 0);
-        DrawHelper.scale(1000);
+        scale(1000);
         DrawHelper.renderSquare();
         glPopMatrix();
     }
