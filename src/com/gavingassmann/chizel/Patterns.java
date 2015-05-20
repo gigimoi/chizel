@@ -7,14 +7,14 @@ import java.util.List;
  * Created by Gavin
  */
 public class Patterns {
-    static List<boolean[][]> patterns = new ArrayList<>();
+    static List<boolean[][]> patterns = new ArrayList<boolean[][]>();
     public static void init() {
         patterns.add(
                 getPattern("xxxxx" +
-                        "xxxxx" +
-                        "xxoxx" +
-                        "xxxxx" +
-                        "xxxxx")
+                           "xxxxx" +
+                           "xxoxx" +
+                           "xxxxx" +
+                           "xxxxx")
         );
     }
     public static BlockGroup getGroup(int index) {

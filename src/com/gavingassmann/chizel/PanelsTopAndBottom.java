@@ -1,5 +1,7 @@
 package com.gavingassmann.chizel;
 
+import java.awt.*;
+
 import static com.gavingassmann.chizel.DrawHelper.*;
 import static org.lwjgl.opengl.GL11.glPopMatrix;
 import static org.lwjgl.opengl.GL11.glPushMatrix;
@@ -9,6 +11,10 @@ import static org.lwjgl.opengl.GL11.glTranslated;
  * Created by Gassmann844 on 5/15/2015.
  */
 public class PanelsTopAndBottom implements IDrawable {
+    public boolean red;
+    public PanelsTopAndBottom(boolean red) {
+        this.red = red;
+    }
     @Override
     public void draw() {
         glPushMatrix();
@@ -38,5 +44,12 @@ public class PanelsTopAndBottom implements IDrawable {
             translate(0, 8);
         }
         glPopMatrix();
+        if(red) {
+            glPushMatrix();
+            scale(1000);
+            color(255, 10, 10, 100);
+            renderSquare();
+            glPopMatrix();
+        }
     }
 }

@@ -26,7 +26,7 @@ public class ConveyorReader implements IDrawable {
             color(100, 255, 100);
         }
         if(bad) {
-            color(255, 100, 100);
+            color(240, 70, 70);
         }
         renderSquare();
     }

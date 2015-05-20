@@ -96,7 +96,7 @@ public class Program {
             public void invoke(long window, int key, int scancode, int action, int mods) {
                 if ( key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE )
                     glfwSetWindowShouldClose(window, GL_TRUE);
-                if(key == GLFW_KEY_SPACE && action == GLFW_PRESS && !blocks.isRotating) {
+                if(!isReading() && key == GLFW_KEY_SPACE && action == GLFW_PRESS && !blocks.isRotating) {
                     blocks.isRotating = true;
                 }
                 if(key == GLFW_KEY_ENTER && action == GLFW_RELEASE) {
@@ -107,13 +107,15 @@ public class Program {
         glfwSetMouseButtonCallback(window, mouseButtonCallback = new GLFWMouseButtonCallback() {
             @Override
             public void invoke(long window, int button, int action, int mods) {
-                if(laserBottomTicker == 0 && button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
-                    shootBottomLaser();
-                    laserBottomTicker = 10f;
-                }
-                if(laserTopTicker == 0 && button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS) {
-                    shootTopLaser();
-                    laserTopTicker = 10f;
+                if(!isReading()) {
+                    if(laserBottomTicker == 0 && button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
+                        shootBottomLaser();
+                        laserBottomTicker = 10f;
+                    }
+                    if(laserTopTicker == 0 && button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS) {
+                        shootTopLaser();
+                        laserTopTicker = 10f;
+                    }
                 }
             }
         });
@@ -148,31 +150,62 @@ public class Program {
             glfwPollEvents();
         }
     }
+    boolean foundBad = false;
+    boolean allGood = false;
+    int badTicker = 0;
+    int goodTicker = 0;
     float offset = 0;
     public void update() {
         if(menu != null) {
             menu.update();
             return;
         }
-        offset -= 0.006f;
-        if (laserBottomTicker > 0) {
-            laserBottomTicker -= 1f;
+        if(!foundBad) {
+            offset -= 0.006f;
         } else {
-            laserBottomTicker = 0;
-            shootingBottomLaser = false;
+            badTicker++;
+            if(badTicker > 60) {
+                badTicker = 0;
+                foundBad = false;
+                offset = 0;
+            }
         }
-        if(!shootingBottomLaser) {
-            laserBottomX = Math.min(800, Math.max(MouseX, 120));
-        }
-
         if (laserTopTicker > 0) {
             laserTopTicker -= 1f;
         } else {
             laserTopTicker = 0;
             shootingTopLaser = false;
         }
-        if(!shootingTopLaser) {
-            laserTopX = Math.min(800, Math.max(MouseX, 120));
+        if (laserBottomTicker > 0) {
+            laserBottomTicker -= 1f;
+        } else {
+            laserBottomTicker = 0;
+            shootingBottomLaser = false;
+        }
+        if(!isReading()) {
+            if(!shootingBottomLaser) {
+                laserBottomX = Math.min(800, Math.max(MouseX, 120));
+            }
+            if(!shootingTopLaser) {
+                laserTopX = Math.min(800, Math.max(MouseX, 120));
+            }
+        } else {
+            if(doneReading()) {
+                if(!allGood) {
+                    allGood = true;
+                } else {
+                    if(goodTicker < 60) {
+                        goodTicker++;
+                    } else {
+                        offset = 0;
+                        foundBad = false;
+                        allGood = false;
+                        goodTicker = 0;
+                        badTicker = 0;
+                        blocks = new BlockGroup();
+                    }
+                }
+            }
         }
         blocks.update();
     }
@@ -210,7 +243,22 @@ public class Program {
         translate(0, 0.5);
         for(int i = 0; i < 5; i++) {
             glPushMatrix();
-            new ConveyorReader(i, "check").draw();
+            int index = -1;
+            for(int j = 0; j < 5; j++) {
+                if(offset < - 6.55 - (j * 0.9)) {
+                    index = j;
+                }
+            }
+            String state = "none";
+            if(index >= 0) {
+                if(targetBlocks.blocks[index][i].broken == blocks.rotatedBlocks[index][i].broken) {
+                    state = "check";
+                } else {
+                    state = "bad";
+                    foundBad = true;
+                }
+            }
+            new ConveyorReader(i, state).draw();
             glPopMatrix();
         }
         glPopMatrix();
@@ -246,13 +294,28 @@ public class Program {
                 glPopMatrix();
             }
         }
+        if(foundBad) {
+            glPushMatrix();
+            new BigResult(true).draw();
+            glPopMatrix();
+        }
+        if(allGood) {
+            glPushMatrix();
+            new BigResult(false).draw();
+            glPopMatrix();
+        }
         glPopMatrix();
         glfwSwapBuffers(window);
     }
-
+    public boolean isReading() {
+        return offset < -6;
+    }
+    public boolean doneReading() {
+        return offset < -6 - 5.5;
+    }
     public void drawBorders() {
         glPushMatrix();
-        new PanelsTopAndBottom().draw();
+        new PanelsTopAndBottom(isReading()).draw();
         glPopMatrix();
     }
 
