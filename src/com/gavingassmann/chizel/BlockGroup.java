@@ -1,7 +1,5 @@
 package com.gavingassmann.chizel;
 
-import javafx.util.Pair;
-
 import static com.gavingassmann.chizel.DrawHelper.scale;
 import static com.gavingassmann.chizel.DrawHelper.translate;
 import static org.lwjgl.opengl.GL11.*;
@@ -62,18 +60,15 @@ public class BlockGroup implements IDrawable, IUpdatable{
         if (block > 4) {
             return null;
         }
-        if (direction == 1) {
-            int depth = 0;
-            Pair<Block, Integer> foundBlock = new Pair<>(rotatedBlocks[block][depth], depth);
-            while (depth < 5 && foundBlock.getKey().broken) {
-                foundBlock = new Pair<>(rotatedBlocks[block][depth], depth);
-                depth++;
-            }
-            if (foundBlock.getKey().broken) {
-                foundBlock = new Pair<>(rotatedBlocks[block][depth - 1], depth + 2);
-            }
-            return foundBlock;
+        int depth = direction == -1 ? 4 : 0;
+        Pair<Block, Integer> foundBlock = new Pair<Block, Integer>(rotatedBlocks[block][depth], depth);
+        while (((direction == -1 && depth >= 0) || (direction == 1 && depth < 5)) && foundBlock.getKey().broken) {
+            foundBlock = new Pair<Block, Integer>(rotatedBlocks[block][depth], depth);
+            depth += direction;
         }
-        return null;
+        if (foundBlock.getKey().broken) {
+            foundBlock = new Pair<Block, Integer>(rotatedBlocks[block][depth - 1 * direction], depth + 2 * direction);
+        }
+        return foundBlock;
     }
 }

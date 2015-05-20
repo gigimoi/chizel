@@ -63,4 +63,207 @@ public class DrawHelper {
         glVertex2f(-0.5f, 0.5f);
         glEnd();
     }
+    public static void text(String text) {
+        glPushMatrix();
+        scale(0.25);
+        for(int i = 0; i < text.length(); i++) {
+            translate(text(text.toLowerCase().charAt(i)) + 0.3, 0);
+        }
+        glPopMatrix();
+    }
+    private static float text(char text) {
+        color(0, 0, 0, 255);
+        if(text == ' ') {
+            return 0.5f;
+        }
+        if(text == 'a') {
+            line(0, 0.5f, 0, 1, 2);
+            line(0.5f, 1f, 1, 0, 2);
+            line(0.25f, 0.75f, 0.4f, 0.4f, 2);
+            return 1f;
+        }
+        if(text == 'b') {
+            line(0, 0, 0, 1, 2);
+            line(0, 0.8f, 1, 0.75f, 2);
+            line(0, 0.8f, 0.5f, 0.75f, 2);
+            line(0, 0.8f, 0.5f, 0.25f, 2);
+            line(0, 0.8f, 0f, 0.25f, 2);
+            return 0.8f;
+        }
+        if(text == 'c') {
+            glPushMatrix();
+            scale(0.7f, 1f);
+            line(1, 0.25f, 1, 0.8f, 2);
+            line(0.25f, 0f, 0.8f, 0.5f, 2);
+            line(0.25f, 0f, 0.2f, 0.5f, 2);
+            line(1, 0.25f, 0, 0.2f, 2);
+            glPopMatrix();
+            return 0.7f;
+        }
+        if(text == 'd') {
+            glPushMatrix();
+            scale(0.9f, 1f);
+            line(0, 0, 0, 1, 2);
+            line(0, 0.75f, 1, 0.9f, 2);
+            line(0, 0.75f, 0, 0.1f, 2);
+            line(0.75f, 1f, 0.1f, 0.2f, 2);
+            line(0.75f, 1f, 0.9f, 0.8f, 2);
+            line(0.75f, 1f, 0.9f, 0.8f, 2);
+            line(1f, 1f, 0.8f, 0.2f, 2);
+            glPopMatrix();
+            return 0.9f;
+        }
+        if(text == 'e') {
+            line(0, 0, 1, 0, 2);
+            line(0, 0.8f, 1, 1, 2);
+            line(0, 0.8f, 0.5f, 0.5f, 2);
+            line(0, 0.8f, 0, 0, 2);
+            return 0.8f;
+        }
+        if(text == 'f') {
+            line(0, 0, 1, 0, 2);
+            line(0, 0.8f, 1, 1, 2);
+            line(0, 0.8f, 0.5f, 0.5f, 2);
+            return 0.8f;
+        }
+        if(text == 'g') {
+            line(0.6f, 0.7f, 1f, 0.8f, 2);
+            line(0.1f, 0.6f, 0.9f, 1f, 2);
+            line(0, 0.1f, 0.6f, 0.9f, 2);
+            line(0, 0, 0.6f, 0.4f, 2);
+            line(0, 0.1f, 0.4f, 0.1f, 2);
+            line(0.1f, 0.5f, 0.1f, 0f, 2);
+            line(0.5f, 0.6f, 0f, 0.1f, 2);
+            line(0.6f, 0.7f, 0.1f, 0.3f, 2);
+            line(0.5f, 0.7f, 0.3f, 0.3f, 2);
+            return 0.7f;
+        }
+        if(text == 'h') {
+            line(0, 0, 0, 1, 2);
+            line(0.8f, 0.8f, 0, 1, 2);
+            line(0, 0.8f, 0.5f, 0.5f, 2);
+            return 0.8f;
+        }
+        if(text == 'i') {
+            glPushMatrix();
+            scale(1f, 1.1f);
+            glRotated(90, 0, 0, 1);
+            translate(0.1f, -1f);
+            line(0, 0, 0, 1, 2);
+            line(0.8f, 0.8f, 0, 1, 2);
+            line(0, 0.8f, 0.5f, 0.5f, 2);
+            glPopMatrix();
+            return 1f;
+        }
+        if(text == 'k') {
+            line(0, 0, 0, 1, 2);
+            line(0, 0.8f, 0.5f, 1f, 2);
+            line(0, 0.8f, 0.5f, 0f, 2);
+            return 0.8f;
+        }
+        if(text == 'l') {
+            line(0, 0, 0, 1, 2);
+            line(0, 0.5f, 0, 0, 2);
+            return 0.5f;
+        }
+        if(text == 'm') {
+            line(0, 0, 0, 1, 2);
+            line(0, 0.5f, 1, 0, 2);
+            line(0.5f, 1f, 0, 1, 2);
+            line(1, 1, 0, 1, 2);
+            return 1.1f;
+        }
+        if(text == 'n') {
+            line(0, 0, 0, 1, 2);
+            line(0, 0.8f, 1, 0, 2);
+            line(0.8f, 0.8f, 0, 1, 2);
+            return 0.8f;
+        }
+        if(text == 'p') {
+            line(0.6f, 0.65f, 0.55f, 0.6f, 2);
+            line(0, 0.6f, 0.5f, 0.55f, 2);
+            line(0, 0, 1, 0, 2);
+            line(0, 0.6f, 1, 0.95f, 2);
+            line(0.6f, 0.65f, 0.95f, 0.8f, 2);
+            line(0.65f, 0.65f, 0.8f, 0.6f, 2);
+            return 0.7f;
+        }
+        if(text == 'q') {
+            glPushMatrix();
+            scale(-1f, 1f);
+            translate(-0.65, -0.2f);
+            line(0.6f, 0.65f, 0.55f, 0.6f, 2);
+            line(0, 0.6f, 0.5f, 0.55f, 2);
+            line(0, 0, 1, 0, 2);
+            line(0, 0.6f, 1, 0.95f, 2);
+            line(0.6f, 0.65f, 0.95f, 0.8f, 2);
+            line(0.65f, 0.65f, 0.8f, 0.6f, 2);
+            glPopMatrix();
+            return 0.7f;
+        }
+        if(text == 'r') {
+            line(0.6f, 0.65f, 0.55f, 0.6f, 2);
+            line(0, 0.6f, 0.5f, 0.55f, 2);
+            line(0, 0, 1, 0, 2);
+            line(0, 0.6f, 1, 0.95f, 2);
+            line(0.6f, 0.65f, 0.95f, 0.8f, 2);
+            line(0.65f, 0.65f, 0.8f, 0.6f, 2);
+            line(0, 0.65f, 0.5f, 0f, 2);
+            return 0.7f;
+        }
+        if(text == 't') {
+            line(0, 0.8f, 1, 1, 2);
+            line(0.4f, 0.4f, 1, 0, 2);
+            return 0.8f;
+        }
+        if(text == 'u') {
+            line(0, 0, 1, 0.1f, 2);
+            line(0.8f, 0.8f, 1, 0.1f, 2);
+            line(0.8f, 0.7f, 0.1f, 0f, 2);
+            line(0f, 0.1f, 0.1f, 0f, 2);
+            line(0.1f, 0.7f, 0f, 0f, 2);
+            return 0.8f;
+        }
+        if(text == 'v') {
+            line(0, 0.4f, 1f, 0f, 2);
+            line(0.4f, 0.8f, 0f, 1f, 2);
+            return 0.8f;
+        }
+        if(text == 'w') {
+            line(0, 1f / 3f, 1, 0, 2f);
+            line(1f / 3f, 1f / 2f, 0, 1, 2f);
+            line(1f / 2f, 1f / 3f * 2f, 1, 0, 2f);
+            line(1f / 3f * 2f, 1f, 0, 1f, 2f);
+            return 1f;
+        }
+        if(text == 'x') {
+            line(0, 0.8f, 1f, 0, 2);
+            line(0, 0.8f, 0, 1f, 2);
+            return 0.8f;
+        }
+        if(text == 'z') {
+            line(0, 0.8f, 1f, 1f, 2f);
+            line(0.8f, 0, 1f, 0f, 2f);
+            line(0, 0.8f, 0f, 0f, 2f);
+            return 0.8f;
+        }
+        if(text == '[') {
+            line(0, 0, 1, 0, 2);
+            line(0, 0.3f, 0, 0, 2);
+            line(0, 0.3f, 1, 1, 2);
+            return 0.4f;
+        }
+        if(text == ']') {
+            translate(0.3, 0);
+            line(0, 0, 1, 0, 2);
+            line(0, -0.3f, 0, 0, 2);
+            line(0, -0.3f, 1, 1, 2);
+            return 0.4f;
+        }
+        glPushMatrix();
+        translate(0.5f, 0.5f);
+        renderSquare();
+        glPopMatrix();
+        return 1f;
+    }
 }

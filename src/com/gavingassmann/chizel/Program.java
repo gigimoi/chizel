@@ -1,16 +1,15 @@
 package com.gavingassmann.chizel;
 
-import javafx.util.Pair;
 import org.lwjgl.Sys;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GLContext;
 
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.util.Random;
 
-import static com.gavingassmann.chizel.DrawHelper.scale;
-import static com.gavingassmann.chizel.DrawHelper.translate;
+import static com.gavingassmann.chizel.DrawHelper.*;
 import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -33,16 +32,20 @@ public class Program {
     public BlockGroup blocks = new BlockGroup();
     public BlockGroup targetBlocks;
 
-    int LaserX = 0;
-    float laserTicker = 0;
+    float laserBottomX = 0;
+    float laserTopX = 0;
+    float laserBottomTicker = 0;
+    float laserTopTicker = 0;
+    boolean shootingBottomLaser = false;
+    boolean shootingTopLaser = false;
 
-    boolean shootingLaser = false;
     private GLFWErrorCallback errorCallback;
     private GLFWKeyCallback keyCallback;
     private GLFWCursorPosCallback cursorPosCallback;
     private GLFWMouseButtonCallback mouseButtonCallback;
     private long window;
 
+    static MainMenu menu = new MainMenu();
     public static void main(String[] args) {
         //</skynet>
         //Safety first
@@ -75,7 +78,17 @@ public class Program {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-        window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
+        long monitor = glfwGetPrimaryMonitor();
+        if(true) {
+            window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
+        } else {
+            IntBuffer wid = IntBuffer.allocate(100);
+            IntBuffer hei = IntBuffer.allocate(100);
+            glfwGetMonitorPhysicalSize(monitor, wid, hei);
+            System.out.println(wid.get());
+            window = glfwCreateWindow(wid.get(), hei.get(), WINDOW_TITLE, monitor, NULL);
+        }
+
         if ( window == NULL )
             throw new RuntimeException("Failed to create the GLFW window");
         glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
@@ -86,14 +99,21 @@ public class Program {
                 if(key == GLFW_KEY_SPACE && action == GLFW_PRESS && !blocks.isRotating) {
                     blocks.isRotating = true;
                 }
+                if(key == GLFW_KEY_ENTER && action == GLFW_RELEASE) {
+                    menu = null;
+                }
             }
         });
         glfwSetMouseButtonCallback(window, mouseButtonCallback = new GLFWMouseButtonCallback() {
             @Override
             public void invoke(long window, int button, int action, int mods) {
-                if(button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
-                    shootLaser();
-                    laserTicker = 10f;
+                if(laserBottomTicker == 0 && button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
+                    shootBottomLaser();
+                    laserBottomTicker = 10f;
+                }
+                if(laserTopTicker == 0 && button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS) {
+                    shootTopLaser();
+                    laserTopTicker = 10f;
                 }
             }
         });
@@ -130,25 +150,49 @@ public class Program {
     }
     float offset = 0;
     public void update() {
-        if (laserTicker > 0) {
-            laserTicker -= 1f;
-        } else {
-            laserTicker = 0;
-            shootingLaser = false;
+        if(menu != null) {
+            menu.update();
+            return;
         }
-        if(!shootingLaser) {
-            LaserX = Math.min(800, Math.max(MouseX, 120));
-            offset -= 0.006f;
+        offset -= 0.006f;
+        if (laserBottomTicker > 0) {
+            laserBottomTicker -= 1f;
+        } else {
+            laserBottomTicker = 0;
+            shootingBottomLaser = false;
+        }
+        if(!shootingBottomLaser) {
+            laserBottomX = Math.min(800, Math.max(MouseX, 120));
+        }
+
+        if (laserTopTicker > 0) {
+            laserTopTicker -= 1f;
+        } else {
+            laserTopTicker = 0;
+            shootingTopLaser = false;
+        }
+        if(!shootingTopLaser) {
+            laserTopX = Math.min(800, Math.max(MouseX, 120));
         }
         blocks.update();
     }
 
-    void shootLaser() {
-        shootingLaser = true;
+    void shootBottomLaser() {
+        shootingBottomLaser = true;
+    }
+    void shootTopLaser() {
+        shootingTopLaser = true;
     }
 
     public void draw() {
         clear();
+        if(menu != null) {
+            glPushMatrix();
+            menu.draw();
+            glPopMatrix();
+            glfwSwapBuffers(window);
+            return;
+        }
         drawBorders();
         glPushMatrix();
         translate(7, 2.25);
@@ -171,17 +215,35 @@ public class Program {
         }
         glPopMatrix();
         glPushMatrix();
-        new Laser(LaserX, 0).draw();
+        new Laser((int)laserBottomX, 0).draw();
         glPopMatrix();
         glPushMatrix();
-        if(shootingLaser) {
-            int block = Math.round((LaserX - 488f - 32 - (offset * 420 * 2 / 12)) / 64f); //This line works through pixie magic, do not tough
+        new Laser((int)laserTopX, 9).draw();
+        glPopMatrix();
+        glPushMatrix();
+        if(shootingBottomLaser) {
+            int block = Math.round((laserBottomX - 488f - 32 - (offset * 420 * 2 / 12)) / 64f);
             Pair<Block, Integer> hitBlock = blocks.getBlock(block, 1);
             if (hitBlock != null) {
-                if (laserTicker == 1) {
+                if (laserBottomTicker == 1) {
                     hitBlock.getKey().broken = true;
                 }
-                new LaserShot(LaserX / (float) WINDOW_WIDTH * 12f, 1, hitBlock.getValue() + 1).draw();
+                glPushMatrix();
+                new LaserShot(laserBottomX / (float) WINDOW_WIDTH * 12f, 1, hitBlock.getValue() + 1).draw();
+                glPopMatrix();
+            }
+        }
+        if(shootingTopLaser) {
+            int block = Math.round((laserTopX - 488f - 32 - (offset * 420 * 2 / 12)) / 64f);
+            Pair<Block, Integer> hitBlock = blocks.getBlock(block, -1);
+            if (hitBlock != null) {
+                if (laserTopTicker == 1) {
+                    hitBlock.getKey().broken = true;
+                }
+                glPushMatrix();
+                translate(0, hitBlock.getValue() + 2);
+                new LaserShot(laserBottomX / (float) WINDOW_WIDTH * 12f, 1, 5f - hitBlock.getValue()).draw();
+                glPopMatrix();
             }
         }
         glPopMatrix();
@@ -190,15 +252,7 @@ public class Program {
 
     public void drawBorders() {
         glPushMatrix();
-        DrawHelper.color(60, 60, 60);
-        scale(100, 2.1);
-        DrawHelper.renderSquare();
-        glPopMatrix();
-        glPushMatrix();
-        DrawHelper.color(60, 60, 60);
-        translate(0, 9);
-        scale(100, 2.1);
-        DrawHelper.renderSquare();
+        new PanelsTopAndBottom().draw();
         glPopMatrix();
     }
 
