@@ -8,21 +8,52 @@ import java.util.List;
  */
 public class Patterns {
     static List<boolean[][]> patterns = new ArrayList<boolean[][]>();
+    static public BlockGroup swastika;
     public static void init() {
+        swastika = getGroup(getPattern("oxooo" +
+                "oxoxx" +
+                "ooooo" +
+                "xxoxo" +
+                "oooxo")
+        );
         patterns.add(
                 getPattern("xxxxx" +
-                           "xxxxx" +
                            "xxoxx" +
-                           "xxxxx" +
+                           "xooox" +
+                           "xxoxx" +
                            "xxxxx")
+        );
+        patterns.add(
+                getPattern("oxxxo" +
+                           "xxoxx" +
+                           "oooox" +
+                           "xxoxx" +
+                           "oxxxo")
+        );
+        patterns.add(
+                getPattern("xoxox" +
+                           "ooxoo" +
+                           "xxoxx" +
+                           "ooxoo" +
+                           "xoxox")
+        );
+        patterns.add(
+                getPattern("xoxox" +
+                           "ooxoo" +
+                           "ooooo" +
+                           "xxxxx" +
+                           "xoxox")
         );
     }
     public static BlockGroup getGroup(int index) {
+        return getGroup(patterns.get(index));
+    }
+    public static BlockGroup getGroup(boolean[][] pattern) {
         BlockGroup b = new BlockGroup();
         for(int i = 0; i < 5; i++) {
             for(int j = 0; j < 5; j++) {
                 b.blocks[i][j] = new Block();
-                b.blocks[i][j].broken = patterns.get(index)[i][j];
+                b.blocks[i][j].broken = pattern[i][j];
             }
         }
         return b;

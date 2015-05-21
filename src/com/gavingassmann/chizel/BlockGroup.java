@@ -12,6 +12,7 @@ public class BlockGroup implements IDrawable, IUpdatable{
     public Block[][] rotatedBlocks = new Block[5][5];
     public float angle = 0f;
     public boolean isRotating = false;
+
     @Override
     public void draw() {
         scale(0.9);
@@ -70,5 +71,33 @@ public class BlockGroup implements IDrawable, IUpdatable{
             foundBlock = new Pair<Block, Integer>(rotatedBlocks[block][depth - 1 * direction], depth + 2 * direction);
         }
         return foundBlock;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj.getClass() == BlockGroup.class) {
+            BlockGroup other = (BlockGroup)obj;
+            for(int i = 0; i < 5; i++) {
+                for(int j = 0; j < 5; j++) {
+                    Block b1 = null;
+                    Block b2 = null;
+                    if(other.rotatedBlocks[i][j] == null) {
+                        b1 = other.blocks[i][j];
+                    } else {
+                        b1 = other.rotatedBlocks[i][j];
+                    }
+                    if(rotatedBlocks[i][j] == null) {
+                        b2 = blocks[i][j];
+                    } else {
+                        b2 = rotatedBlocks[i][j];
+                    }
+                    if(b1 == null || b2 == null || b1.broken != b2.broken) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return super.equals(obj);
     }
 }

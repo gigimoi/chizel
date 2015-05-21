@@ -66,8 +66,13 @@ public class DrawHelper {
     public static void text(String text) {
         glPushMatrix();
         scale(0.25);
+        double offset = 0;
         for(int i = 0; i < text.length(); i++) {
-            translate(text(text.toLowerCase().charAt(i)) + 0.3, 0);
+            glPushMatrix();
+            translate(offset, 0);
+            double len = text(text.toLowerCase().charAt(i)) + 0.3;
+            offset += len;
+            glPopMatrix();
         }
         glPopMatrix();
     }
@@ -259,6 +264,12 @@ public class DrawHelper {
             line(0, -0.3f, 0, 0, 2);
             line(0, -0.3f, 1, 1, 2);
             return 0.4f;
+        }
+        if(text == ':') {
+            translate(0.1, 0);
+            line(0, 0, 0.2f, 0.3f, 2);
+            line(0, 0, 0.8f, 0.7f, 2);
+            return 0.3f;
         }
         glPushMatrix();
         translate(0.5f, 0.5f);

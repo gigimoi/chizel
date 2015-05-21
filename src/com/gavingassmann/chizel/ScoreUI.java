@@ -16,20 +16,16 @@ public class ScoreUI implements IDrawable {
     public void draw() {
         glPushMatrix();
         color(230, 230, 230);
-        translate(10.7, 0.4);
-        scale(2, 0.9);
+        translate(0.72, 8.55);
+        scale(0.7);
+        scale(3.5, 1);
         renderSquare();
         glPopMatrix();
         glPushMatrix();
-        translate(10, -0.01);
-        String scoreText = "";
-        for(int i = 0; i < score; i++) {
-            scoreText += "l";
-            if(scoreText.endsWith("llll")) {
-                scoreText = scoreText.substring(0, scoreText.length() - 4) + "v";
-            }
-        }
-        text(scoreText);
+        translate(0.1, 8.5);
+        scale(0.7);
+        text("Vim: " + new RomanNumeral().RomanNumerals(score));
+        glPopMatrix();
         glPopMatrix();
     }
 }

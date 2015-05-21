@@ -39,6 +39,8 @@ public class Program {
     boolean shootingBottomLaser = false;
     boolean shootingTopLaser = false;
 
+    int score = 0;
+
     private GLFWErrorCallback errorCallback;
     private GLFWKeyCallback keyCallback;
     private GLFWCursorPosCallback cursorPosCallback;
@@ -70,7 +72,7 @@ public class Program {
 
     private void init() {
         Patterns.init();
-        targetBlocks = Patterns.getGroup(0);
+        resetGameboard();
 
         glfwSetErrorCallback(errorCallback = errorCallbackPrint(System.err));
         if ( glfwInit() != GL11.GL_TRUE )
@@ -155,19 +157,25 @@ public class Program {
     int badTicker = 0;
     int goodTicker = 0;
     float offset = 0;
+    boolean done = false;
     public void update() {
         if(menu != null) {
             menu.update();
             return;
         }
+        if(blocks.equals(Patterns.swastika)) {
+            //TODO: CHEAT
+        }
         if(!foundBad) {
-            offset -= 0.006f;
+            offset -= 0.007f;
+            if(blocks.equals(targetBlocks)) {
+                done = true;
+                offset -= 0.012f;
+            }
         } else {
             badTicker++;
             if(badTicker > 60) {
-                badTicker = 0;
-                foundBad = false;
-                offset = 0;
+                resetGameboard();
             }
         }
         if (laserTopTicker > 0) {
@@ -196,18 +204,27 @@ public class Program {
                 } else {
                     if(goodTicker < 60) {
                         goodTicker++;
+                        if(goodTicker == 1) {
+                            score += 1;
+                        }
                     } else {
-                        offset = 0;
-                        foundBad = false;
-                        allGood = false;
-                        goodTicker = 0;
-                        badTicker = 0;
-                        blocks = new BlockGroup();
+                        resetGameboard();
                     }
                 }
             }
         }
         blocks.update();
+    }
+
+    private void resetGameboard() {
+        offset = 0;
+        foundBad = false;
+        allGood = false;
+        goodTicker = 0;
+        badTicker = 0;
+        blocks = new BlockGroup();
+        done = false;
+        targetBlocks = Patterns.getGroup(_r.nextInt(Patterns.patterns.size()));
     }
 
     void shootBottomLaser() {
@@ -294,8 +311,9 @@ public class Program {
                 glPopMatrix();
             }
         }
+        glPopMatrix();
         glPushMatrix();
-        new ScoreUI(10).draw();
+        new ScoreUI(score).draw();
         glPopMatrix();
         if(foundBad) {
             glPushMatrix();
@@ -311,7 +329,7 @@ public class Program {
         glfwSwapBuffers(window);
     }
     public boolean isReading() {
-        return offset < -6;
+        return offset < -6 || done;
     }
     public boolean doneReading() {
         return offset < -6 - 5.5;
