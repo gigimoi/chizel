@@ -44,6 +44,20 @@ public class Patterns {
                            "xxxxx" +
                            "xoxox")
         );
+        patterns.add(
+                getPattern("ooxoo" +
+                           "ooxoo" +
+                           "xxxxx" +
+                           "ooxoo" +
+                           "xoxox")
+        );
+        patterns.add(
+                getPattern("oxoxo" +
+                           "oxoxo" +
+                           "xxoxx" +
+                           "oxoxo" +
+                           "oxoxo")
+        );
     }
     public static BlockGroup getGroup(int index) {
         return getGroup(patterns.get(index));

@@ -164,13 +164,14 @@ public class Program {
             return;
         }
         if(blocks.equals(Patterns.swastika)) {
-            //TODO: CHEAT
+            score += 10;
+            resetGameboard();
         }
         if(!foundBad) {
             offset -= 0.007f;
             if(blocks.equals(targetBlocks)) {
                 done = true;
-                offset -= 0.012f;
+                offset -= 0.023f;
             }
         } else {
             badTicker++;

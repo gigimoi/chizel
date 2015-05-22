@@ -24,7 +24,7 @@ public class ScoreUI implements IDrawable {
         glPushMatrix();
         translate(0.1, 8.5);
         scale(0.7);
-        text("Vim: " + new RomanNumeral().RomanNumerals(score));
+        text("Vim:" + new RomanNumeral().RomanNumerals(score));
         glPopMatrix();
         glPopMatrix();
     }
