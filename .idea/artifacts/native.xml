@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="native">
+    <output-path>$PROJECT_DIR$/out/artifacts/Chizel_jar/native</output-path>
+    <root id="root">
+      <element id="dir-copy" path="$PROJECT_DIR$/native" />
+    </root>
+  </artifact>
+</component>

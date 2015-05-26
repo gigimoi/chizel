@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Chizel:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Chizel_jar</output-path>
+    <properties id="ant-postprocessing">
+      <options enabled="true" />
+    </properties>
+    <root id="archive" name="Chizel.jar">
+      <element id="module-output" name="Chizel" />
+      <element id="extracted-dir" path="$USER_HOME$/IdeaProjects/lwjgl/jar/lwjgl.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
