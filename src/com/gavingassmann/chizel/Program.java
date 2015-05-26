@@ -137,19 +137,31 @@ public class Program {
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1);
         glfwShowWindow(window);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
         GLContext.createFromCurrent();
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glOrtho(0, 12, 0, 9, 0, 1);
+        System.out.println("Initialized in " + Math.round(glfwGetTime() * 1000) + " milliseconds");
     }
 
     private void loop() {
+        float frameTotal = 0f;
+        int frameTicker = 0;
         while ( glfwWindowShouldClose(window) == GL_FALSE ) {
+            glfwSetTime(0);
             update();
             draw();
             glfwPollEvents();
+            frameTicker++;
+            frameTotal += glfwGetTime();
+            if(frameTicker == 60) {
+                System.out.println("Average frame time in milliseconds: " + Math.round(frameTotal / 60f * 1000f));
+                frameTicker = 0;
+                frameTotal = 0;
+            }
         }
     }
     boolean foundBad = false;
@@ -326,6 +338,13 @@ public class Program {
             new BigResult(false).draw();
             glPopMatrix();
         }
+        glPopMatrix();
+        glPushMatrix();
+        color(255, 255, 255);
+        float x = MouseX / (float)WINDOW_WIDTH * 12f;
+        float y = (WINDOW_HEIGHT - MouseY) / (float)WINDOW_HEIGHT * 9f;
+        line(x - 0.25f, x + 0.25f, y, y, 6);
+        line(x, x, y - 0.25f, y + 0.25f, 6);
         glPopMatrix();
         glfwSwapBuffers(window);
     }

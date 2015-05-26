@@ -27,6 +27,9 @@ public class MainMenu implements IDrawable, IUpdatable {
         scale(1.1);
         text("[Enter]");
         glPopMatrix();
+        glPushMatrix();
+        translate(text("LClick + RClick        Bar to turn"), 0);
+        glPopMatrix();
     }
     @Override
     public void update() {

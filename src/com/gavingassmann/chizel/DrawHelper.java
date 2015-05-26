@@ -63,7 +63,7 @@ public class DrawHelper {
         glVertex2f(-0.5f, 0.5f);
         glEnd();
     }
-    public static void text(String text) {
+    public static double text(String text) {
         glPushMatrix();
         scale(0.25);
         double offset = 0;
@@ -75,6 +75,7 @@ public class DrawHelper {
             glPopMatrix();
         }
         glPopMatrix();
+        return offset;
     }
     private static float text(char text) {
         color(0, 0, 0, 255);
@@ -270,6 +271,18 @@ public class DrawHelper {
             line(0, 0, 0.2f, 0.3f, 2);
             line(0, 0, 0.8f, 0.7f, 2);
             return 0.3f;
+        }
+        if(text == '+') {
+            line(0, 0.6f, 0.5f, 0.5f, 2);
+            line(0.3f, 0.5f, 0.1f, 0.9f, 2);
+            return 0.7f;
+        }
+        if(text == 'o') {
+            line(0, 0, 0, 1, 2);
+            line(1, 1, 0, 1, 2);
+            line(0, 1, 1, 1, 2);
+            line(0, 1, 0, 0, 2);
+            return 1;
         }
         glPushMatrix();
         translate(0.5f, 0.5f);
