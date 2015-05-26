@@ -51,6 +51,7 @@ public class Program {
     public static void main(String[] args) {
         //</skynet>
         //Safety first
+        System.setProperty("java.library.path", "native");
         new Program().run();
     }
 
