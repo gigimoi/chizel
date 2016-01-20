@@ -1,19 +1,17 @@
 package com.gavingassmann.chizel;
 
-import org.lwjgl.Sys;
-import org.lwjgl.glfw.*;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GLContext;
-
-import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.util.Random;
 
 import static com.gavingassmann.chizel.DrawHelper.*;
-import static org.lwjgl.glfw.Callbacks.errorCallbackPrint;
+
+import org.lwjgl.*;
+import org.lwjgl.glfw.*;
+import org.lwjgl.opengl.*;
+
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryUtil.NULL;
+import static org.lwjgl.system.MemoryUtil.*;
 
 /**
  * Created by Gavin Gassmann
@@ -45,6 +43,7 @@ public class Program {
     private GLFWKeyCallback keyCallback;
     private GLFWCursorPosCallback cursorPosCallback;
     private GLFWMouseButtonCallback mouseButtonCallback;
+
     private long window;
 
     static MainMenu menu = new MainMenu();
@@ -56,16 +55,17 @@ public class Program {
     }
 
     public void run() {
-        System.out.println(Sys.getVersion());
+        System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
         try {
             init();
             loop();
+
+            // Release window and window callbacks
             glfwDestroyWindow(window);
             keyCallback.release();
-            cursorPosCallback.release();
-            mouseButtonCallback.release();
         } finally {
+            // Terminate GLFW and release the GLFWErrorCallback
             glfwTerminate();
             errorCallback.release();
         }
@@ -75,7 +75,7 @@ public class Program {
         Patterns.init();
         resetGameboard();
 
-        glfwSetErrorCallback(errorCallback = errorCallbackPrint(System.err));
+        glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
         if ( glfwInit() != GL11.GL_TRUE )
             throw new IllegalStateException("Unable to initialize GLFW");
         glfwDefaultWindowHints();
@@ -129,18 +129,25 @@ public class Program {
                 MouseX = (int) x;
             }
         });
-        ByteBuffer vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        // Center our window
         glfwSetWindowPos(
                 window,
-                (GLFWvidmode.width(vidmode) - WINDOW_WIDTH) / 2,
-                (GLFWvidmode.height(vidmode) - WINDOW_HEIGHT) / 2
+                (vidmode.width() - WINDOW_WIDTH) / 2,
+                (vidmode.height() - WINDOW_HEIGHT) / 2
         );
-        glfwMakeContextCurrent(window);
-        glfwSwapInterval(1);
-        glfwShowWindow(window);
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
-        GLContext.createFromCurrent();
+        // Make the OpenGL context current
+        glfwMakeContextCurrent(window);
+        // Enable v-sync
+        glfwSwapInterval(1);
+
+        // Make the window visible
+        glfwShowWindow(window);
+
+        GL.createCapabilities();
+
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -149,6 +156,7 @@ public class Program {
     }
 
     private void loop() {
+
         float frameTotal = 0f;
         int frameTicker = 0;
         while ( glfwWindowShouldClose(window) == GL_FALSE ) {
